@@ -24,6 +24,7 @@ import com.henrique.notificationscheduling.application.SchedulingResponse;
 import com.henrique.notificationscheduling.application.SchedulingService;
 import com.henrique.notificationscheduling.infrastructure.SchedulingController;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class SchedulingControllerTest {
@@ -107,6 +108,24 @@ public class SchedulingControllerTest {
         .andExpect(jsonPath("$.status").value("SCHEDULED"));
     }
 
+    @Test
+    void mightGetAllSchedulings() throws Exception {
+
+        when(schedulingService.getAllScheduling()).thenReturn(List.of(schedulingResponse));
+
+        mockMvc.perform(get("/agendamento"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1L))
+        .andExpect(jsonPath("$.recipientMail").value("email@gmail.com"))
+        .andExpect(jsonPath("$.recipientName").value("John Doe"))
+        .andExpect(jsonPath("$.recipientPhone").value("1234567890"))
+        .andExpect(jsonPath("$.sentDate").value("2025-01-01T10:00:00"))
+        .andExpect(jsonPath("$.scheduleDate").value("2025-01-01T10:00:00"))
+        .andExpect(jsonPath("$.modifiedDate").value("2025-01-01T10:00:00"))
+        .andExpect(jsonPath("$.message").value("Hello, how are you?"))
+        .andExpect(jsonPath("$.status").value("SCHEDULED"));
+    }
+    
     @Test
     void mightCancelScheduling() throws Exception {
         when(schedulingService.cancelScheduling(1L)).thenReturn(schedulingResponse);
